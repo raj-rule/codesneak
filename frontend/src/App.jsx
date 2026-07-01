@@ -567,7 +567,7 @@ function App() {
               <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-sm">
                 <Loader2 size={48} className="text-purple-500 animate-spin mb-4" />
                 <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">Parsing AST &amp; Generating Embeddings...</h2>
-                <p className="text-sm text-slate-650 dark:text-slate-400">Please wait while the cartographer indexes the codebase.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Please wait while the cartographer indexes the codebase.</p>
               </div>
             )}
             {filteredGraphData ? <GraphCanvas key={activeTab} graphData={filteredGraphData} onNodeClick={handleNodeClick} expandedFiles={expandedFiles} onExpandNode={toggleExpandFile} focusNodeId={focusNodeId} isDataMap={activeTab === 'data'} /> : <div className="p-5 text-slate-500">Loading Map... Make sure API is running.</div>}
@@ -620,8 +620,8 @@ function App() {
                     {searchResults.length === 0 ? <span className="text-slate-500">No semantic search executed yet.</span> : null}
                     {searchResults.map((res, idx) => (
                       <div key={idx} className="flex gap-3">
-                        <span className="text-emerald-655 dark:text-emerald-500 shrink-0">Match {idx + 1}</span>
-                        <span className="text-slate-800 dark:text-slate-300">{res}</span>
+                        <span className="text-emerald-600 dark:text-emerald-500 shrink-0">Match {idx + 1}</span>
+                        <span className="text-slate-800 dark:text-slate-300 font-mono text-xs">{res}</span>
                       </div>
                     ))}
                   </div>
@@ -767,7 +767,7 @@ function App() {
                         <div>
                           <div className="flex items-center gap-2">
                             <FileCode size={14} className="text-slate-500 dark:text-slate-400" />
-                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate" title={filename}>{filename}</span>
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate font-mono" title={filename}>{filename}</span>
                           </div>
                           <div className="text-[10px] text-slate-500 pl-6 mt-0.5 truncate max-w-[200px]" title={fileGroup.id}>{relPath}</div>
                         </div>
@@ -788,7 +788,7 @@ function App() {
                                  }}
                                >
                                  <Box size={13} className="text-emerald-500 dark:text-emerald-400" />
-                                 <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">{className}</span>
+                                 <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 font-mono">{className}</span>
                                </div>
                                
                                {classObj.methods.map(method => {
@@ -802,7 +802,7 @@ function App() {
                                      }}
                                    >
                                      <Braces size={11} className="text-yellow-600/70 dark:text-yellow-500/70" />
-                                     <span className="text-xs text-slate-600 dark:text-slate-400 group-hover:text-purple-600 dark:group-hover:text-purple-400">{method.name}</span>
+                                     <span className="text-xs text-slate-600 dark:text-slate-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 font-mono">{method.name}</span>
                                    </div>
                                  );
                                })}
@@ -821,7 +821,7 @@ function App() {
                                }}
                              >
                                <Braces size={13} className="text-yellow-600 dark:text-yellow-400" />
-                               <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">{func.name}</span>
+                               <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 font-mono">{func.name}</span>
                              </div>
                            );
                         })}
