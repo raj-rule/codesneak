@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --bg-dark: #0f111a;
+  --bg-panel: #1e1e2e;
+  --bg-panel-hover: #2a2a3c;
+  --text-main: #f8f8f2;
+  --text-muted: #a1a1aa;
+  --accent: #82aaff;
+  --accent-glow: rgba(130, 170, 255, 0.2);
+  --border-color: #3b3b4f;
+  --font-family: 'Inter', system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  overflow: hidden;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.topbar {
+  height: 60px;
+  background-color: var(--bg-panel);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.logo {
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.2s ease;
+}
+
+.search-container:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  outline: none;
+  width: 100%;
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 280px;
+  background-color: var(--bg-panel);
+  border-right: 1px solid var(--border-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  margin: 0 0 8px 0;
+}
+
+.sidebar-item {
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+  background-color: var(--bg-panel-hover);
+  color: var(--text-main);
+}
+
+.canvas-area {
+  flex: 1;
+  position: relative;
+  background: var(--bg-dark);
+}
+
+/* Custom React Flow Node Styling */
+.custom-node {
+  border-radius: 8px;
+  background-color: var(--bg-panel);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 180px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.custom-node:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.custom-node.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.node-header {
+  padding: 8px 12px;
+  background-color: rgba(0,0,0,0.2);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.node-body {
+  padding: 12px;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+/* React Flow overrrides */
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent);
+  border: 2px solid var(--bg-panel);
+}
+
+.react-flow__edge-path {
+  stroke: var(--text-muted);
+  stroke-width: 2;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+/* ── Directory Group (Compound) Node Styles ─────────────────────────────── */
+
+/* React Flow renders 'group' type nodes as a plain .react-flow__node div.
+   We use data-label (set via node.data.label passed through RF internals)
+   to show the directory name using a CSS ::before pseudo-element.         */
+
+.react-flow__node-group {
+  pointer-events: none !important; /* group rect must not steal clicks     */
+  overflow: visible !important;
+}
+
+/* Directory label — rendered as an absolutely-positioned ::before badge   */
+.react-flow__node-group > div::before {
+  content: attr(data-label);       /* RF copies data.label → data-label   */
+  position: absolute;
+  top: -22px;
+  left: 12px;
+  font-family: 'JetBrains Mono', 'Inter', monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.65);
+  background: rgba(13, 17, 23, 0.75);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+/* Hover highlight on the group border */
+.react-flow__node-group:hover > div {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  transition: border-color 0.2s ease;
+}
+
+/* Child nodes inside groups must be clickable                             */
+.react-flow__node:not(.react-flow__node-group) {
+  pointer-events: all !important;
+}
+

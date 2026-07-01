@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codesneak | Premium Developer Workspace</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+          darkMode: "class",
+          theme: {
+              extend: {
+                  "colors": {
+                      "background": "#0e141a",
+                      "on-surface": "#dde3ec",
+                      "on-primary-fixed": "#2c0051",
+                      "on-tertiary-fixed": "#191c22",
+                      "error-container": "#93000a",
+                      "on-secondary": "#2c3138",
+                      "error": "#ffb4ab",
+                      "secondary-fixed": "#dee2ec",
+                      "surface-variant": "#2f353c",
+                      "inverse-surface": "#dde3ec",
+                      "on-tertiary": "#2e3037",
+                      "surface-container-high": "#252b31",
+                      "inverse-primary": "#842bd2",
+                      "surface-container-low": "#161c23",
+                      "on-background": "#dde3ec",
+                      "on-surface-variant": "#cfc2d6",
+                      "surface": "#0e141a",
+                      "on-secondary-container": "#b1b5bf",
+                      "tertiary-fixed": "#e1e2eb",
+                      "surface-container-highest": "#2f353c",
+                      "primary": "#ddb7ff",
+                      "on-error": "#690005",
+                      "secondary": "#c2c7d0",
+                      "surface-dim": "#0e141a",
+                      "on-error-container": "#ffdad6",
+                      "surface-container": "#1a2027",
+                      "secondary-container": "#42474f",
+                      "tertiary-fixed-dim": "#c4c6cf",
+                      "surface-container-lowest": "#090f15",
+                      "on-secondary-fixed": "#171c23",
+                      "on-tertiary-container": "#272a30",
+                      "outline-variant": "#4d4354",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "on-primary-container": "#400071",
+                      "outline": "#988d9f",
+                      "on-primary-fixed-variant": "#6900b3",
+                      "on-tertiary-fixed-variant": "#44474e",
+                      "on-primary": "#490080",
+                      "tertiary": "#c4c6cf",
+                      "secondary-fixed-dim": "#c2c7d0",
+                      "inverse-on-surface": "#2b3138",
+                      "surface-tint": "#ddb7ff",
+                      "primary-fixed": "#f0dbff",
+                      "surface-bright": "#343a41",
+                      "primary-container": "#b76dff",
+                      "tertiary-container": "#8e9099",
+                      "primary-fixed-dim": "#ddb7ff"
+                  },
+                  "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+                  },
+                  "spacing": {
+                      "xs": "4px",
+                      "gutter": "1px",
+                      "xl": "32px",
+                      "unit": "4px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "lg": "24px"
+                  },
+                  "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "code-md": ["JetBrains Mono"],
+                      "label-caps": ["Inter"],
+                      "h2": ["Inter"],
+                      "h1": ["Inter"],
+                      "body-md": ["Inter"]
+                  },
+                  "fontSize": {
+                      "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                      "code-md": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                  }
+              },
+          },
+      }
+    </script>
+    <style>
+      .dot-grid {
+          background-image: radial-gradient(#30363d 1px, transparent 1px);
+          background-size: 24px 24px;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #30363d;
+          border-radius: 2px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #4d4354;
+      }
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body class="bg-background text-on-surface font-body-md selection:bg-primary/30">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
