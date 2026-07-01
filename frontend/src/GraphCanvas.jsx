@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import {
   ReactFlow, useNodesState, useEdgesState,
   Background, MiniMap, ReactFlowProvider,
@@ -13,8 +13,8 @@ import DatabaseNode from './DatabaseNode';
 // ─── Constants ────────────────────────────────────────────────────────────────
 const NODE_W   = 220;
 const NODE_H   = 80;
-const GROUP_PAD = 36;   // padding inside each directory box
-const GROUP_HEADER_H = 28; // space reserved for the dir label at the top
+// const GROUP_PAD = 36;   // padding inside each directory box
+// const GROUP_HEADER_H = 28; // space reserved for the dir label at the top
 
 // ─── Node types registered with React Flow ───────────────────────────────────
 // 'group' is React Flow's built-in compound-node type (renders a plain div).
@@ -43,59 +43,59 @@ function resolveEdgeStyle(linkType) {
     case 'NETWORK_REQUEST':
       return {
         animated: true,
-        style: { stroke: '#a855f7', strokeWidth: 2.5, strokeDasharray: '6 3' },
+        style: { stroke: '#a855f7', strokeWidth: 2, strokeDasharray: '6 3' },
         labelStyle: { fill: '#a855f7', fontWeight: 700, fontSize: 10 },
-        labelBgStyle: { fill: '#1a0f2e', fillOpacity: 0.9 },
+        labelBgStyle: { fill: '#111827' },
       };
     case 'RENDERS':
       return {
         animated: false,
-        style: { stroke: '#60a5fa', strokeWidth: 1.8 },
-        labelStyle: { fill: '#60a5fa', fontSize: 10 },
-        labelBgStyle: { fill: '#0f172a', fillOpacity: 0.85 },
+        style: { stroke: '#3b82f6', strokeWidth: 1.5 },
+        labelStyle: { fill: '#3b82f6', fontSize: 10 },
+        labelBgStyle: { fill: '#111827' },
       };
     case 'USES_HOOK':
       return {
         animated: true,
-        style: { stroke: '#fbbf24', strokeWidth: 1.5, strokeDasharray: '4 3' },
-        labelStyle: { fill: '#fbbf24', fontSize: 10 },
-        labelBgStyle: { fill: '#1c1400', fillOpacity: 0.85 },
+        style: { stroke: '#f59e0b', strokeWidth: 1.5, strokeDasharray: '4 3' },
+        labelStyle: { fill: '#f59e0b', fontSize: 10 },
+        labelBgStyle: { fill: '#111827' },
       };
     case 'FETCHES':
       return {
         animated: true,
-        style: { stroke: '#c084fc', strokeWidth: 1.5, strokeDasharray: '5 3' },
-        labelStyle: { fill: '#c084fc', fontSize: 10 },
-        labelBgStyle: { fill: '#1a0f2e', fillOpacity: 0.85 },
+        style: { stroke: '#8b5cf6', strokeWidth: 1.5, strokeDasharray: '5 3' },
+        labelStyle: { fill: '#8b5cf6', fontSize: 10 },
+        labelBgStyle: { fill: '#111827' },
       };
     case 'DEFINES':
       return {
         animated: false,
-        style: { stroke: '#4ade80', strokeWidth: 1.8 },
-        labelStyle: { fill: '#4ade80', fontSize: 10 },
-        labelBgStyle: { fill: '#0d1f11', fillOpacity: 0.85 },
+        style: { stroke: '#10b981', strokeWidth: 1.5 },
+        labelStyle: { fill: '#10b981', fontSize: 10 },
+        labelBgStyle: { fill: '#111827' },
       };
     case 'CALLS':
       return {
         animated: true,
-        style: { stroke: '#67e8f9', strokeWidth: 1.5 },
-        labelStyle: { fill: '#67e8f9', fontSize: 10 },
-        labelBgStyle: { fill: '#0f1f2e', fillOpacity: 0.85 },
+        style: { stroke: '#06b6d4', strokeWidth: 1.5 },
+        labelStyle: { fill: '#06b6d4', fontSize: 10 },
+        labelBgStyle: { fill: '#111827' },
       };
     case 'IMPORTS':
       return {
         animated: false,
-        style: { stroke: '#94a3b8', strokeWidth: 1.2 },
+        style: { stroke: '#94a3b8', strokeWidth: 1 },
         labelStyle: { fill: '#94a3b8', fontSize: 10 },
-        labelBgStyle: { fill: '#1a1f2e', fillOpacity: 0.85 },
+        labelBgStyle: { fill: '#111827' },
       };
     case 'FOREIGN_KEY':
       return {
         animated: true,
         type: 'smoothstep',
-        style: { stroke: '#f43f5e', strokeWidth: 2, strokeDasharray: '6 3' },
-        labelStyle: { fill: '#fda4af', fontWeight: 700, fontSize: 10 },
-        labelBgStyle: { fill: '#1c0a0f', fillOpacity: 0.9 },
+        style: { stroke: '#f43f5e', strokeWidth: 1.8, strokeDasharray: '6 3' },
+        labelStyle: { fill: '#f43f5e', fontWeight: 700, fontSize: 10 },
+        labelBgStyle: { fill: '#111827' },
         markerEnd: { type: 'arrowclosed', color: '#f43f5e' },
       };
     case 'CONTAINS':
@@ -331,7 +331,7 @@ async function buildCompoundLayout(dataNodes, edges, isDataMap = false) {
   const processedNodes = [];
   
   // Recursive walker
-  const flatten = (elkNode, parentId = null) => {
+  const flatten = (elkNode) => {
     const isGroup = elkNode.id.startsWith('__group__');
     
     if (isGroup) {
@@ -376,7 +376,7 @@ async function buildCompoundLayout(dataNodes, edges, isDataMap = false) {
     }
 
     if (elkNode.children) {
-      elkNode.children.forEach(child => flatten(child, isGroup ? elkNode.id : null));
+      elkNode.children.forEach(child => flatten(child));
     }
   };
 
@@ -412,7 +412,7 @@ const ALWAYS_VISIBLE = new Set(['API_ROUTE', 'API_ENDPOINT', 'API_CALL', 'COMPON
 function InnerGraphCanvas({ graphData, onNodeClick, expandedFiles = [], onExpandNode, focusNodeId, isDataMap = false }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { zoomIn, zoomOut, fitView, setCenter, getNode } = useReactFlow();
+  const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const [activeEdgeTypes, setActiveEdgeTypes] = React.useState({
     RENDERS: true,
@@ -426,6 +426,24 @@ function InnerGraphCanvas({ graphData, onNodeClick, expandedFiles = [], onExpand
   });
   const [hoveredNodeId, setHoveredNodeId] = React.useState(null);
   const [autoZoomEnabled, setAutoZoomEnabled] = React.useState(true);
+  const [isDark, setIsDark] = React.useState(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return true; // Default fallback
+  });
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    return () => observer.disconnect();
+  }, []);
 
   // ── Cinematic pan to FULL Downstream Tree ─────────────────────────────────
   useEffect(() => {
@@ -632,20 +650,26 @@ function InnerGraphCanvas({ graphData, onNodeClick, expandedFiles = [], onExpand
         // React Flow needs this to correctly render parent-child positions
         nodesDraggable={true}
       >
-        <Background color="#1e2533" gap={22} size={1.2} />
+        <Background
+          color={isDark ? '#334155' : '#cbd5e1'}
+          gap={24}
+          size={1.5}
+          variant="dots"
+          className="bg-slate-50 dark:bg-slate-950"
+        />
 
         <Panel position="top-right" className="bg-[#0d1117]/80 backdrop-blur-md border border-[#30363d] p-3 rounded-lg shadow-2xl z-10 m-4 w-48">
           <div className="font-label-caps text-slate-500 uppercase tracking-widest text-[10px] font-bold mb-3">Edge Filters</div>
           <div className="flex flex-col gap-2">
             {Object.keys(activeEdgeTypes).map((type) => {
               const color = {
-                RENDERS: '#60a5fa',
+                RENDERS: '#3b82f6',
                 NETWORK_REQUEST: '#a855f7',
-                FETCHES: '#c084fc',
-                CALLS: '#67e8f9',
-                USES_HOOK: '#fbbf24',
+                FETCHES: '#8b5cf6',
+                CALLS: '#06b6d4',
+                USES_HOOK: '#f59e0b',
                 IMPORTS: '#94a3b8',
-                DEFINES: '#4ade80'
+                DEFINES: '#10b981'
               }[type] || '#94a3b8';
 
               return (
