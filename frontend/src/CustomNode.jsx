@@ -85,14 +85,14 @@ function getConfig(rawType) {
 
 // ─── CustomNode component ─────────────────────────────────────────────────────
 
-export default function CustomNode({ data }) {
+export default function CustomNode({ data, selected }) {
   const cfg = getConfig(data.type);
   const Icon = cfg.icon;
   const isFile = (data.type || '').toUpperCase() === 'FILE';
 
   return (
     <div
-      className={`w-[220px] rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 ${cfg.borderClass} shadow-sm overflow-hidden flex flex-col cursor-pointer group`}
+      className={`w-[220px] rounded-md bg-white dark:bg-slate-900 border ${selected ? 'border-slate-950 dark:border-slate-100 ring-1 ring-slate-950 dark:ring-slate-100' : 'border-slate-200 dark:border-slate-800'} ${cfg.borderClass} shadow-sm overflow-hidden flex flex-col cursor-pointer group`}
     >
       {/* Target handle */}
       <Handle

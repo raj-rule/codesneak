@@ -72,11 +72,11 @@ function ColumnRow({ col }) {
 }
 
 // ─── DatabaseNode ─────────────────────────────────────────────────────────────
-export default function DatabaseNode({ data }) {
+export default function DatabaseNode({ data, selected }) {
   const columns = data.columns || [];
 
   return (
-    <div className="w-[220px] rounded-md bg-white dark:bg-slate-900 border-2 border-rose-500/50 dark:border-rose-500/40 shadow-sm overflow-hidden flex flex-col">
+    <div className={`w-[220px] rounded-md bg-white dark:bg-slate-900 border-2 ${selected ? 'border-rose-500 ring-1 ring-rose-500' : 'border-rose-500/50 dark:border-rose-500/40'} shadow-sm overflow-hidden flex flex-col`}>
       {/* ── Header ── */}
       <div className="flex items-center gap-1.5 px-3 py-2 border-b border-rose-100 dark:border-rose-950/40 bg-rose-50 dark:bg-rose-950/20">
         <span className="material-symbols-outlined text-[16px] text-rose-500">database</span>
