@@ -495,7 +495,7 @@ function App() {
                       if (node) handleNodeClick(null, { id: node.id, data: node });
                     }} className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 border-l-2 border-purple-500 px-4 py-3 flex items-center gap-3 cursor-pointer">
                       <span className="material-symbols-outlined text-purple-500" data-icon="search_check">search_check</span>
-                      <span className="font-body-sm text-xs truncate" title={id.split('::').pop()}>{id.split('::').pop()}</span>
+                      <span className="font-mono text-xs truncate" title={id.split('::').pop()}>{id.split('::').pop()}</span>
                     </div>
                   ))
                 )}
