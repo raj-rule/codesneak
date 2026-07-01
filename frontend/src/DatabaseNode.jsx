@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Handle, Position } from '@xyflow/react';
 
 // ─── ColumnRow — renders one row with per-column handles ─────────────────────
