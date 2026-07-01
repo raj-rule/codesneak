@@ -83,6 +83,19 @@ const groupDependenciesByFile = (deps, graphNodes) => {
 };
 
 function App() {
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'dark';
+  });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
   const [graphData, setGraphData] = useState(null);
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -115,7 +128,9 @@ function App() {
   };
 
   const fetchGraph = () => {
-    setIsIndexing(true);
+    setTimeout(() => {
+      setIsIndexing(true);
+    }, 0);
     fetch('http://127.0.0.1:8000/api/graph')
       .then(res => res.json())
       .then(data => {
@@ -131,6 +146,7 @@ function App() {
 
   useEffect(() => {
     fetchGraph();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleBrowse = async () => {
@@ -390,16 +406,16 @@ function App() {
 
   return (
     <>
-      <header className="bg-[#0b0e14] dark:bg-[#0b0e14] border-b border-[#30363d] font-inter antialiased tracking-tight docked full-width top-0 flex justify-between items-center px-4 h-12 w-full z-50 fixed">
+      <header className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-inter antialiased tracking-tight docked full-width top-0 flex justify-between items-center px-4 h-12 w-full z-50 fixed">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-purple-500" data-icon="terminal">terminal</span>
-          <span className="text-xl font-bold tracking-tighter text-slate-100">Codesneak</span>
+          <span className="text-xl font-bold tracking-tighter text-slate-800 dark:text-slate-200">Codesneak</span>
         </div>
         <div className="flex-1 max-w-2xl px-8 hidden md:block">
           <div className="relative group">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-purple-500 transition-colors" data-icon="search">search</span>
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-purple-500 transition-colors" data-icon="search">search</span>
             <input 
-              className="w-full bg-[#0b0e14] border border-[#30363d] rounded text-body-sm px-10 py-1.5 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder:text-slate-600" 
+              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded text-body-sm px-10 py-1.5 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600 text-slate-800 dark:text-slate-200" 
               placeholder="Semantic Search..." 
               type="text"
               value={query}
@@ -407,56 +423,66 @@ function App() {
               onKeyDown={handleSearch}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
-              <kbd className="px-1.5 py-0.5 rounded border border-[#30363d] text-[10px] text-slate-500 bg-[#161b22]">⌘</kbd>
-              <kbd className="px-1.5 py-0.5 rounded border border-[#30363d] text-[10px] text-slate-500 bg-[#161b22]">K</kbd>
+              <kbd className="px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-800 text-[10px] text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900">⌘</kbd>
+              <kbd className="px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-800 text-[10px] text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900">K</kbd>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-2 py-1 rounded bg-surface-container border border-[#30363d]">
+          <button 
+            onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+            className="flex items-center justify-center p-1.5 rounded border border-slate-200 dark:border-slate-800 hover:border-purple-500 dark:hover:border-purple-400 text-slate-500 dark:text-slate-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors"
+            title="Toggle theme"
+          >
+            <span className="material-symbols-outlined text-[18px]" data-icon={theme === 'dark' ? 'light_mode' : 'dark_mode'}>
+              {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+            </span>
+          </button>
+
+          <div className="flex items-center gap-2 px-2 py-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span className="font-code-md text-body-sm text-slate-400">main</span>
+            <span className="font-code-md text-body-sm text-slate-600 dark:text-slate-400">main</span>
           </div>
-          <span className="material-symbols-outlined text-slate-400 hover:text-purple-500 cursor-pointer transition-colors" data-icon="settings">settings</span>
+          <span className="material-symbols-outlined text-slate-500 dark:text-slate-400 hover:text-purple-500 dark:hover:text-purple-400 cursor-pointer transition-colors" data-icon="settings">settings</span>
         </div>
       </header>
       
       <div className="flex h-screen pt-12 overflow-hidden">
-        <aside className="bg-[#161b22] dark:bg-[#161b22] border-r border-[#30363d] docked left-0 h-full w-64 flex flex-col hidden md:flex shrink-0">
+        <aside className="bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 docked left-0 h-full w-[280px] flex flex-col hidden md:flex shrink-0">
           <div className="flex flex-col h-full overflow-y-auto custom-scrollbar">
             
-            <div className="p-4 border-b border-[#30363d] relative">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-800 relative">
               <span className="font-label-caps text-slate-500 uppercase block mb-2 text-[10px] tracking-widest font-bold">Active Workspace</span>
               <div 
-                className="flex items-center justify-between bg-[#0b0e14] border border-[#30363d] rounded px-3 py-2 cursor-pointer hover:border-purple-500 transition-colors"
+                className="flex items-center justify-between bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded px-3 py-2 cursor-pointer hover:border-purple-500 dark:hover:border-purple-400 transition-colors"
                 onClick={() => setIsWorkspaceDropdownOpen(!isWorkspaceDropdownOpen)}
               >
                 <div className="flex items-center gap-2">
                   <Box size={14} className="text-purple-400" />
-                  <span className="text-sm font-semibold text-slate-200 truncate">{activeProject}</span>
+                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">{activeProject}</span>
                 </div>
                 <ChevronDown size={14} className="text-slate-500" />
               </div>
               
               {isWorkspaceDropdownOpen && (
-                <div className="absolute top-[72px] left-4 right-4 bg-[#0d1117] border border-[#30363d] rounded-md shadow-2xl z-50 overflow-hidden">
+                <div className="absolute top-[72px] left-4 right-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md shadow-2xl z-50 overflow-hidden">
                   <div 
-                    className="flex items-center gap-2 px-3 py-2.5 hover:bg-[#1c2128] cursor-pointer transition-colors"
+                    className="flex items-center gap-2 px-3 py-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors"
                     onClick={() => {
                       setIsWorkspaceDropdownOpen(false);
                       setIsWorkspaceModalOpen(true);
                     }}
                   >
                     <Plus size={14} className="text-emerald-400" />
-                    <span className="text-sm text-slate-300">Add Local Directory...</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">Add Local Directory...</span>
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="py-4 border-b border-[#30363d]">
+            <div className="py-4 border-b border-slate-200 dark:border-slate-800">
               <div className="px-4 mb-2 flex justify-between items-center group cursor-pointer">
-                <span className="font-inter text-sm uppercase tracking-widest text-slate-400 group-hover:text-slate-200">Semantic Matches</span>
+                <span className="font-inter text-sm uppercase tracking-widest text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200">Semantic Matches</span>
                 <span className="material-symbols-outlined text-sm text-slate-500" data-icon="expand_more">expand_more</span>
               </div>
               <nav className="flex flex-col">
@@ -467,7 +493,7 @@ function App() {
                     <div key={idx} onClick={() => {
                       const node = graphData?.nodes.find(n => n.id === id);
                       if (node) handleNodeClick(null, { id: node.id, data: node });
-                    }} className="bg-[#0b0e14] text-slate-100 border-l-2 border-purple-500 px-4 py-3 flex items-center gap-3 cursor-pointer">
+                    }} className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 border-l-2 border-purple-500 px-4 py-3 flex items-center gap-3 cursor-pointer">
                       <span className="material-symbols-outlined text-purple-500" data-icon="search_check">search_check</span>
                       <span className="font-body-sm text-xs truncate" title={id.split('::').pop()}>{id.split('::').pop()}</span>
                     </div>
@@ -478,10 +504,10 @@ function App() {
             
             <div className="py-4 flex-1">
               <div className="px-4 mb-2 flex justify-between items-center group cursor-pointer">
-                <span className="font-inter text-sm uppercase tracking-widest text-slate-400 group-hover:text-slate-200">Project Explorer</span>
+                <span className="font-inter text-sm uppercase tracking-widest text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200">Project Explorer</span>
                 <div className="flex gap-2">
-                  <span className="material-symbols-outlined text-sm text-slate-500 hover:text-slate-200" data-icon="create_new_folder">create_new_folder</span>
-                  <span className="material-symbols-outlined text-sm text-slate-500 hover:text-slate-200" data-icon="note_add">note_add</span>
+                  <span className="material-symbols-outlined text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-200" data-icon="create_new_folder">create_new_folder</span>
+                  <span className="material-symbols-outlined text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-200" data-icon="note_add">note_add</span>
                 </div>
               </div>
               <div className="font-code-md text-body-sm space-y-1">
@@ -499,8 +525,8 @@ function App() {
               </div>
             </div>
             
-            <div className="p-4 border-t border-[#30363d] space-y-2">
-              <div className="flex items-center gap-3 text-slate-500 hover:text-purple-400 transition-colors cursor-pointer text-xs" onClick={() => setInspectorOpen(!inspectorOpen)}>
+            <div className="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+              <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors cursor-pointer text-xs" onClick={() => setInspectorOpen(!inspectorOpen)}>
                 <span className="material-symbols-outlined text-sm" data-icon="account_tree">account_tree</span>
                 <span>Node Inspector</span>
               </div>
@@ -508,16 +534,16 @@ function App() {
           </div>
         </aside>
         
-        <div className="flex-1 relative bg-[#0b0e14] dot-grid overflow-hidden flex flex-col" id="canvas-container">
+        <div className="flex-1 relative bg-slate-50 dark:bg-slate-950 dot-grid overflow-hidden flex flex-col" id="canvas-container">
 
           {/* ── Dual-Tab Bar ──────────────────────────────────────────── */}
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 bg-[#0d1117]/90 backdrop-blur-md border border-[#30363d] rounded-full p-1 shadow-2xl">
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-full p-1 shadow-2xl">
             <button
               onClick={() => { setActiveTab('logic'); setSelectedNode(null); setFocusNodeId(null); }}
               className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'logic'
                   ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/50'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
             >
               <span className="material-symbols-outlined text-[14px]">bolt</span>
@@ -528,7 +554,7 @@ function App() {
               className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'data'
                   ? 'bg-rose-600 text-white shadow-lg shadow-rose-900/50'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
             >
               <span className="material-symbols-outlined text-[14px]">database</span>
@@ -538,55 +564,55 @@ function App() {
 
           <div className="flex-1 w-full h-full relative" style={{ height: "100%", width: "100%" }}>
             {isIndexing && (
-              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0b0e14]/80 backdrop-blur-sm">
+              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-sm">
                 <Loader2 size={48} className="text-purple-500 animate-spin mb-4" />
-                <h2 className="text-lg font-bold text-slate-200 mb-2">Parsing AST &amp; Generating Embeddings...</h2>
-                <p className="text-sm text-slate-400">Please wait while the cartographer indexes the codebase.</p>
+                <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">Parsing AST &amp; Generating Embeddings...</h2>
+                <p className="text-sm text-slate-650 dark:text-slate-400">Please wait while the cartographer indexes the codebase.</p>
               </div>
             )}
             {filteredGraphData ? <GraphCanvas key={activeTab} graphData={filteredGraphData} onNodeClick={handleNodeClick} expandedFiles={expandedFiles} onExpandNode={toggleExpandFile} focusNodeId={focusNodeId} isDataMap={activeTab === 'data'} /> : <div className="p-5 text-slate-500">Loading Map... Make sure API is running.</div>}
           </div>
 
-          <div className={`bg-[#0d1117] border-t border-[#30363d] flex flex-col shrink-0 w-full z-20 absolute bottom-0 left-0 transition-all duration-300 ${terminalOpen ? 'h-[25%]' : 'h-9'}`}>
-            <div className="flex items-center justify-between px-4 h-9 border-b border-[#30363d] bg-[#161b22]">
+          <div className={`bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex flex-col shrink-0 w-full z-20 absolute bottom-0 left-0 transition-all duration-300 ${terminalOpen ? 'h-[25%]' : 'h-9'}`}>
+            <div className="flex items-center justify-between px-4 h-9 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
               <div className="flex items-center gap-4 h-full">
-                <span className="font-inter text-xs font-semibold text-slate-300 uppercase tracking-widest flex items-center gap-2 cursor-pointer" onClick={() => setTerminalOpen(!terminalOpen)}>
+                <span className="font-inter text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-widest flex items-center gap-2 cursor-pointer" onClick={() => setTerminalOpen(!terminalOpen)}>
                   <span className="material-symbols-outlined text-sm text-purple-400" data-icon="terminal">terminal</span>
                   AI Terminal &amp; Logs
                 </span>
                 <div className="flex h-full ml-2">
                   <button 
                     onClick={() => {setActiveTerminalTab('Agent Reasoning'); setTerminalOpen(true);}}
-                    className={`text-xs px-4 flex items-center mt-1 transition-colors ${activeTerminalTab === 'Agent Reasoning' ? 'text-slate-200 bg-[#0d1117] border-x border-t border-[#30363d] rounded-t-md relative before:absolute before:-bottom-[1px] before:left-0 before:w-full before:h-[1px] before:bg-[#0d1117]' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`text-xs px-4 flex items-center mt-1 transition-colors ${activeTerminalTab === 'Agent Reasoning' ? 'text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-slate-900 border-x border-t border-slate-300 dark:border-slate-800 rounded-t-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 bg-transparent'}`}
                   >Agent Reasoning</button>
                   <button 
                     onClick={() => {setActiveTerminalTab('System Logs'); setTerminalOpen(true);}}
-                    className={`text-xs px-4 flex items-center mt-1 transition-colors ${activeTerminalTab === 'System Logs' ? 'text-slate-200 bg-[#0d1117] border-x border-t border-[#30363d] rounded-t-md relative before:absolute before:-bottom-[1px] before:left-0 before:w-full before:h-[1px] before:bg-[#0d1117]' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`text-xs px-4 flex items-center mt-1 transition-colors ${activeTerminalTab === 'System Logs' ? 'text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-slate-900 border-x border-t border-slate-300 dark:border-slate-800 rounded-t-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 bg-transparent'}`}
                   >System Logs</button>
                   <button 
                     onClick={() => {setActiveTerminalTab('Semantic Search Output'); setTerminalOpen(true);}}
-                    className={`text-xs px-4 flex items-center mt-1 transition-colors ${activeTerminalTab === 'Semantic Search Output' ? 'text-slate-200 bg-[#0d1117] border-x border-t border-[#30363d] rounded-t-md relative before:absolute before:-bottom-[1px] before:left-0 before:w-full before:h-[1px] before:bg-[#0d1117]' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`text-xs px-4 flex items-center mt-1 transition-colors ${activeTerminalTab === 'Semantic Search Output' ? 'text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-slate-900 border-x border-t border-slate-300 dark:border-slate-800 rounded-t-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 bg-transparent'}`}
                   >Semantic Search Output</button>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-slate-500">
-                <button onClick={() => setTerminalOpen(!terminalOpen)} className="hover:text-slate-300 transition-colors flex items-center justify-center"><span className="material-symbols-outlined text-[16px]" data-icon={terminalOpen ? "keyboard_arrow_down" : "keyboard_arrow_up"}>{terminalOpen ? "keyboard_arrow_down" : "keyboard_arrow_up"}</span></button>
-                <button onClick={() => setTerminalOpen(false)} className="hover:text-slate-300 transition-colors flex items-center justify-center"><span className="material-symbols-outlined text-[16px]" data-icon="close">close</span></button>
+                <button onClick={() => setTerminalOpen(!terminalOpen)} className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors flex items-center justify-center"><span className="material-symbols-outlined text-[16px]" data-icon={terminalOpen ? "keyboard_arrow_down" : "keyboard_arrow_up"}>{terminalOpen ? "keyboard_arrow_down" : "keyboard_arrow_up"}</span></button>
+                <button onClick={() => setTerminalOpen(false)} className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors flex items-center justify-center"><span className="material-symbols-outlined text-[16px]" data-icon="close">close</span></button>
               </div>
             </div>
             {terminalOpen && (
-              <div className="flex-1 overflow-auto p-4 font-code-md text-xs text-slate-400 custom-scrollbar">
+              <div className="flex-1 overflow-auto p-4 font-code-md text-xs text-slate-700 dark:text-slate-400 custom-scrollbar">
                 {activeTerminalTab === 'System Logs' && terminalLogs.map((log, idx) => (
                   <div key={idx} className="flex gap-3 mb-2">
-                    <span className="text-emerald-500 shrink-0">{log.time}</span>
-                    <span className="text-purple-400 shrink-0">[System]</span>
-                    <span className="text-slate-300">{log.message}</span>
+                    <span className="text-emerald-600 dark:text-emerald-500 shrink-0">{log.time}</span>
+                    <span className="text-purple-600 dark:text-purple-400 shrink-0">[System]</span>
+                    <span className="text-slate-800 dark:text-slate-300">{log.message}</span>
                   </div>
                 ))}
                 {activeTerminalTab === 'Agent Reasoning' && (
                   <div className="flex gap-3 mb-2">
-                    <span className="text-purple-400 shrink-0">[Agent]</span>
-                    <span className="text-slate-300">Awaiting user input. Standing by to cluster Architecture Domains.</span>
+                    <span className="text-purple-600 dark:text-purple-400 shrink-0">[Agent]</span>
+                    <span className="text-slate-800 dark:text-slate-300">Awaiting user input. Standing by to cluster Architecture Domains.</span>
                   </div>
                 )}
                 {activeTerminalTab === 'Semantic Search Output' && (
@@ -594,8 +620,8 @@ function App() {
                     {searchResults.length === 0 ? <span className="text-slate-500">No semantic search executed yet.</span> : null}
                     {searchResults.map((res, idx) => (
                       <div key={idx} className="flex gap-3">
-                        <span className="text-emerald-500 shrink-0">Match {idx + 1}</span>
-                        <span className="text-slate-300">{res}</span>
+                        <span className="text-emerald-655 dark:text-emerald-500 shrink-0">Match {idx + 1}</span>
+                        <span className="text-slate-800 dark:text-slate-300">{res}</span>
                       </div>
                     ))}
                   </div>
@@ -605,20 +631,20 @@ function App() {
           </div>
         </div>
         
-        <aside className={`bg-[#161b22] dark:bg-[#161b22] border-l border-[#30363d] docked right-0 h-full w-[360px] flex-col shrink-0 transition-all ${inspectorOpen ? 'flex' : 'hidden'}`}>
-          <div className="p-4 border-b border-[#30363d] shrink-0">
+        <aside className={`bg-slate-50 dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 docked right-0 h-full w-[360px] flex-col shrink-0 transition-all ${inspectorOpen ? 'flex' : 'hidden'}`}>
+          <div className="p-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-inter text-sm uppercase tracking-widest text-slate-100 flex items-center gap-2">
+              <h3 className="font-inter text-sm uppercase tracking-widest text-slate-800 dark:text-slate-100 flex items-center gap-2">
                 <span className="material-symbols-outlined text-sm text-purple-500" data-icon="account_tree">account_tree</span>
                 Node Inspector
               </h3>
-              <button onClick={() => setInspectorOpen(false)} className="text-slate-500 hover:text-slate-300">
+              <button onClick={() => setInspectorOpen(false)} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
                 <span className="material-symbols-outlined text-sm" data-icon="close">close</span>
               </button>
             </div>
             {selectedNode ? (
               <div className="space-y-4">
-                <div className="p-3 bg-[#0b0e14] border border-[#30363d] rounded">
+                <div className="p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-xs text-slate-500">Node ID</span>
                     <div className="flex items-center gap-2">
@@ -628,41 +654,41 @@ function App() {
                   </div>
                   <div className="flex justify-between items-center mt-2">
                     <span className="text-xs text-slate-500">Type</span>
-                    <span className="text-xs text-slate-300 font-bold uppercase tracking-widest">{selectedNode.data?.type || 'Unknown'}</span>
+                    <span className="text-xs text-slate-800 dark:text-slate-300 font-bold uppercase tracking-widest">{selectedNode.data?.type || 'Unknown'}</span>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs text-slate-400">Path</span>
-                    <span className="font-code-md text-xs text-slate-200" style={{wordBreak: 'break-all'}}>{selectedNode.data?.path || selectedNode.path || 'N/A'}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">Path</span>
+                    <span className="font-code-md text-xs text-slate-800 dark:text-slate-200" style={{wordBreak: 'break-all'}}>{selectedNode.data?.path || selectedNode.path || 'N/A'}</span>
                   </div>
-                  {(selectedNode.type === 'DATABASE_TABLE' || selectedNode.data?.type === 'DATABASE_TABLE') && (selectedNode.columns || selectedNode.data?.columns) && (selectedNode.columns || selectedNode.data?.columns).length > 0 && (
-                    <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-[#30363d]">
-                      <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase mb-1">Schema Columns</span>
+                  {(selectedNode.type === 'DATABASE_TABLE' || selectedNode.data?.type === 'DATABASE_TABLE') && (selectedNode.columns || selectedNode.data?.columns)?.length > 0 && (
+                    <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-widest uppercase mb-1">Schema Columns</span>
                       <div className="flex flex-col gap-1.5 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
-                        {(selectedNode.columns || selectedNode.data?.columns).map((col, idx) => (
-                          <div key={idx} className="flex justify-between items-center bg-[#0b0e14] p-1.5 rounded border border-[#30363d]">
+                        {(selectedNode.columns || selectedNode.data?.columns)?.map((col, idx) => (
+                          <div key={idx} className="flex justify-between items-center bg-white dark:bg-slate-950 p-1.5 rounded border border-slate-200 dark:border-slate-800">
                             <div className="flex items-center gap-1.5 overflow-hidden">
-                              {col.isPrimaryKey && <span className="material-symbols-outlined text-[13px] text-amber-400" title="Primary Key">key</span>}
-                              {col.isForeignKey && <span className="material-symbols-outlined text-[13px] text-blue-400" title="Foreign Key">link</span>}
-                              {!col.isPrimaryKey && !col.isForeignKey && <span className="material-symbols-outlined text-[13px] text-slate-500">data_object</span>}
-                              <span className="text-xs font-mono text-slate-300 truncate" title={col.name}>{col.name}</span>
+                              {col.isPrimaryKey && <span className="material-symbols-outlined text-[13px] text-amber-500 dark:text-amber-400" title="Primary Key">key</span>}
+                              {col.isForeignKey && <span className="material-symbols-outlined text-[13px] text-blue-500 dark:text-blue-400" title="Foreign Key">link</span>}
+                              {!col.isPrimaryKey && !col.isForeignKey && <span className="material-symbols-outlined text-[13px] text-slate-400 dark:text-slate-500">data_object</span>}
+                              <span className="text-xs font-mono text-slate-800 dark:text-slate-300 truncate" title={col.name}>{col.name}</span>
                             </div>
-                            <span className="text-[10px] font-mono text-slate-500 bg-slate-800/50 px-1.5 py-0.5 rounded ml-2 whitespace-nowrap">{col.type}</span>
+                            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 px-1.5 py-0.5 rounded ml-2 whitespace-nowrap">{col.type}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-slate-400">Last Modified</span>
-                    <span className="text-xs text-slate-300">Just now</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">Last Modified</span>
+                    <span className="text-xs text-slate-800 dark:text-slate-300">Just now</span>
                   </div>
 
                   {/* ── Wormhole: Logic → Data ──────────────────────────── */}
                   {wormholeTables.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-[#30363d]">
-                      <span className="text-[10px] font-bold tracking-widest uppercase text-rose-400 flex items-center gap-1.5 mb-2">
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-bold tracking-widest uppercase text-rose-500 dark:text-rose-400 flex items-center gap-1.5 mb-2">
                         <span className="material-symbols-outlined text-[13px]">database</span>
                         Database Side-Effects
                       </span>
@@ -671,13 +697,13 @@ function App() {
                           <button
                             key={tbl.id}
                             onClick={() => wormholeJump(tbl.id, 'data')}
-                            className="flex items-center justify-between w-full text-left px-2.5 py-1.5 rounded bg-rose-900/20 border border-rose-900/40 hover:border-rose-500/60 hover:bg-rose-900/30 transition-all group"
+                            className="flex items-center justify-between w-full text-left px-2.5 py-1.5 rounded bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-900/40 hover:border-rose-500/60 dark:hover:border-rose-500/60 hover:bg-rose-100 dark:hover:bg-rose-900/30 transition-all group"
                           >
                             <div className="flex items-center gap-2 overflow-hidden">
-                              <span className="material-symbols-outlined text-[13px] text-rose-400">table</span>
-                              <span className="text-xs text-rose-300 font-mono truncate">{tbl.name}</span>
+                              <span className="material-symbols-outlined text-[13px] text-rose-500 dark:text-rose-400">table</span>
+                              <span className="text-xs text-rose-700 dark:text-rose-300 font-mono truncate">{tbl.name}</span>
                             </div>
-                            <span className="material-symbols-outlined text-[13px] text-slate-500 group-hover:text-rose-400 transition-colors shrink-0">arrow_forward</span>
+                            <span className="material-symbols-outlined text-[13px] text-slate-400 dark:text-slate-500 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors shrink-0">arrow_forward</span>
                           </button>
                         ))}
                       </div>
@@ -686,8 +712,8 @@ function App() {
 
                   {/* ── Wormhole: Data → Logic ──────────────────────────── */}
                   {wormholeLogic.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-[#30363d]">
-                      <span className="text-[10px] font-bold tracking-widest uppercase text-purple-400 flex items-center gap-1.5 mb-2">
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-bold tracking-widest uppercase text-purple-600 dark:text-purple-400 flex items-center gap-1.5 mb-2">
                         <span className="material-symbols-outlined text-[13px]">bolt</span>
                         Used by Backend Logic
                       </span>
@@ -696,13 +722,13 @@ function App() {
                           <button
                             key={ln.id}
                             onClick={() => wormholeJump(ln.id, 'logic')}
-                            className="flex items-center justify-between w-full text-left px-2.5 py-1.5 rounded bg-purple-900/20 border border-purple-900/40 hover:border-purple-500/60 hover:bg-purple-900/30 transition-all group"
+                            className="flex items-center justify-between w-full text-left px-2.5 py-1.5 rounded bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-900/40 hover:border-purple-500/60 dark:hover:border-purple-500/60 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all group"
                           >
                             <div className="flex items-center gap-2 overflow-hidden">
-                              <span className="material-symbols-outlined text-[13px] text-purple-400">code</span>
-                              <span className="text-xs text-purple-300 font-mono truncate">{ln.name || ln.id.split('::').pop()}</span>
+                              <span className="material-symbols-outlined text-[13px] text-purple-500 dark:text-purple-400">code</span>
+                              <span className="text-xs text-purple-700 dark:text-purple-300 font-mono truncate">{ln.name || ln.id.split('::').pop()}</span>
                             </div>
-                            <span className="material-symbols-outlined text-[13px] text-slate-500 group-hover:text-purple-400 transition-colors shrink-0">arrow_forward</span>
+                            <span className="material-symbols-outlined text-[13px] text-slate-400 dark:text-slate-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors shrink-0">arrow_forward</span>
                           </button>
                         ))}
                       </div>
@@ -712,7 +738,7 @@ function App() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="p-3 bg-[#0b0e14] border border-[#30363d] rounded text-center">
+                <div className="p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded text-center">
                   <span className="text-xs text-slate-500">Select a node to inspect</span>
                 </div>
               </div>
@@ -723,7 +749,7 @@ function App() {
             <span className="font-label-caps text-slate-500 uppercase block mb-3 text-xs tracking-widest font-bold">Downstream Deps</span>
             <div className="space-y-3">
               {groupedDependencies.length === 0 ? (
-                <div className="text-xs text-slate-500 p-3 text-center border border-dashed border-[#30363d] rounded bg-[#0b0e14]">No downstream dependencies</div>
+                <div className="text-xs text-slate-500 p-3 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded bg-white dark:bg-slate-950">No downstream dependencies</div>
               ) : (
                 groupedDependencies.map(fileGroup => {
                   const fileNode = graphData?.nodes.find(n => n.id === fileGroup.id) || {};
@@ -731,21 +757,21 @@ function App() {
                   const relPath = fileGroup.id.split(/[/\\]/).slice(-3).join('/');
 
                   return (
-                    <div key={fileGroup.id} className="bg-[#0b0e14] border border-[#30363d] rounded-lg overflow-hidden shadow-sm">
+                    <div key={fileGroup.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-sm">
                       <div 
-                        className="flex justify-between items-center p-3 bg-[#161b22] border-b border-[#30363d] cursor-pointer hover:bg-[#1c2128] transition-colors group"
+                        className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group"
                         onClick={() => {
                            if (fileNode.id) handleNodeClick(null, { id: fileNode.id, data: fileNode });
                         }}
                       >
                         <div>
                           <div className="flex items-center gap-2">
-                            <FileCode size={14} className="text-slate-400" />
-                            <span className="text-sm font-bold text-slate-200 group-hover:text-purple-400 transition-colors truncate" title={filename}>{filename}</span>
+                            <FileCode size={14} className="text-slate-500 dark:text-slate-400" />
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate" title={filename}>{filename}</span>
                           </div>
                           <div className="text-[10px] text-slate-500 pl-6 mt-0.5 truncate max-w-[200px]" title={fileGroup.id}>{relPath}</div>
                         </div>
-                        <button onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(fileGroup.id); addLog(`Copied path to clipboard: ${fileGroup.id}`); }} className="opacity-0 group-hover:opacity-100 p-1 hover:bg-[#0b0e14] rounded text-slate-500 hover:text-slate-300 transition-all" title="Copy File Path">
+                        <button onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(fileGroup.id); addLog(`Copied path to clipboard: ${fileGroup.id}`); }} className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all" title="Copy File Path">
                           <Copy size={12} />
                         </button>
                       </div>
@@ -756,13 +782,13 @@ function App() {
                            return (
                              <div key={className} className="mb-1">
                                <div 
-                                 className="flex items-center gap-2 pl-4 pr-3 py-1.5 cursor-pointer hover:bg-[#1c2128] group transition-colors"
+                                 className="flex items-center gap-2 pl-4 pr-3 py-1.5 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 group transition-colors"
                                  onClick={() => {
                                     if (cNode.id) handleNodeClick(null, { id: cNode.id, data: cNode });
                                  }}
                                >
-                                 <Box size={13} className="text-emerald-400" />
-                                 <span className="text-xs font-semibold text-slate-300 group-hover:text-purple-400">{className}</span>
+                                 <Box size={13} className="text-emerald-500 dark:text-emerald-400" />
+                                 <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">{className}</span>
                                </div>
                                
                                {classObj.methods.map(method => {
@@ -770,13 +796,13 @@ function App() {
                                  return (
                                    <div 
                                      key={method.id} 
-                                     className="flex items-center gap-2 pl-8 pr-3 py-1 cursor-pointer hover:bg-[#1c2128] group transition-colors"
+                                     className="flex items-center gap-2 pl-8 pr-3 py-1 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 group transition-colors"
                                      onClick={() => {
                                         if (mNode.id) handleNodeClick(null, { id: mNode.id, data: mNode });
                                      }}
                                    >
-                                     <Braces size={11} className="text-yellow-500/70" />
-                                     <span className="text-xs text-slate-400 group-hover:text-purple-400">{method.name}</span>
+                                     <Braces size={11} className="text-yellow-600/70 dark:text-yellow-500/70" />
+                                     <span className="text-xs text-slate-600 dark:text-slate-400 group-hover:text-purple-600 dark:group-hover:text-purple-400">{method.name}</span>
                                    </div>
                                  );
                                })}
@@ -789,19 +815,19 @@ function App() {
                            return (
                              <div 
                                key={func.id} 
-                               className="flex items-center gap-2 pl-4 pr-3 py-1.5 cursor-pointer hover:bg-[#1c2128] group transition-colors"
+                               className="flex items-center gap-2 pl-4 pr-3 py-1.5 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 group transition-colors"
                                onClick={() => {
                                   if (fNode.id) handleNodeClick(null, { id: fNode.id, data: fNode });
                                }}
                              >
-                               <Braces size={13} className="text-yellow-400" />
-                               <span className="text-xs font-semibold text-slate-300 group-hover:text-purple-400">{func.name}</span>
+                               <Braces size={13} className="text-yellow-600 dark:text-yellow-400" />
+                               <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">{func.name}</span>
                              </div>
                            );
                         })}
                         
                         {Object.keys(fileGroup.classes).length === 0 && fileGroup.functions.length === 0 && (
-                          <div className="pl-6 py-1 text-[10px] text-slate-600 italic">Whole file imported</div>
+                          <div className="pl-6 py-1 text-[10px] text-slate-500 dark:text-slate-600 italic">Whole file imported</div>
                         )}
                       </div>
                     </div>
@@ -811,7 +837,7 @@ function App() {
             </div>
           </div>
           
-          <div className="p-4 bg-[#0b0e14] border-t border-[#30363d] shrink-0">
+          <div className="p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shrink-0">
             <button 
               onClick={() => {
                 const name = selectedNode?.data?.name || selectedNode?.id || 'Unknown';
@@ -830,39 +856,39 @@ function App() {
 
       {isWorkspaceModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#0d1117] border border-[#30363d] w-full max-w-md rounded-xl flex flex-col shadow-2xl">
-            <div className="flex justify-between items-center p-5 border-b border-[#30363d] bg-[#161b22] rounded-t-xl">
-              <span className="text-slate-200 font-inter font-semibold text-base flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-xl flex flex-col shadow-2xl">
+            <div className="flex justify-between items-center p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-t-xl">
+              <span className="text-slate-800 dark:text-slate-200 font-inter font-semibold text-base flex items-center gap-2">
                 <Box size={16} className="text-purple-400" />
                 Import Local Project
               </span>
-              <button onClick={() => setIsWorkspaceModalOpen(false)} className="text-slate-500 hover:text-slate-200 transition-colors">
+              <button onClick={() => setIsWorkspaceModalOpen(false)} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
                 <span className="material-symbols-outlined" data-icon="close">close</span>
               </button>
             </div>
             <div className="p-6">
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Directory Path</label>
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2">Directory Path</label>
               <div className="flex gap-2">
                 <input 
                   type="text" 
                   value={newWorkspacePath}
                   onChange={(e) => { setNewWorkspacePath(e.target.value); setImportError(''); }}
-                  className={`flex-1 bg-[#0b0e14] border ${importError ? 'border-red-500' : 'border-[#30363d]'} rounded-md text-sm text-slate-200 px-4 py-2.5 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder:text-slate-600`}
+                  className={`flex-1 bg-slate-50 dark:bg-slate-950 border ${importError ? 'border-red-500' : 'border-slate-200 dark:border-slate-800'} rounded-md text-sm text-slate-800 dark:text-slate-200 px-4 py-2.5 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600`}
                   placeholder="Enter absolute path... e.g. C:/Users/Projects/MyApp"
                   autoFocus
                 />
                 <button 
                   onClick={handleBrowse} 
                   disabled={isBrowsing}
-                  className="px-4 py-2 bg-[#1c2128] border border-[#30363d] hover:bg-[#30363d] rounded text-sm font-semibold text-slate-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 rounded text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {isBrowsing ? 'Opening...' : 'Browse...'}
                 </button>
               </div>
               {importError && <p className="text-red-500 text-xs font-semibold mt-2">{importError}</p>}
             </div>
-            <div className="flex items-center justify-end gap-3 p-4 border-t border-[#30363d] bg-[#161b22] rounded-b-xl">
-              <button onClick={() => setIsWorkspaceModalOpen(false)} className="px-4 py-2 text-sm font-semibold text-slate-400 hover:text-slate-200 transition-colors">Cancel</button>
+            <div className="flex items-center justify-end gap-3 p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-b-xl">
+              <button onClick={() => setIsWorkspaceModalOpen(false)} className="px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">Cancel</button>
               <button onClick={handleImportWorkspace} className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded text-sm font-semibold transition-all shadow-lg shadow-purple-500/20 active:opacity-80">Import &amp; Analyze</button>
             </div>
           </div>
@@ -871,17 +897,17 @@ function App() {
       
       {codeModalOpen && selectedNode && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#0d1117] border border-[#30363d] w-[80%] h-[80%] rounded-lg flex flex-col shadow-2xl">
-            <div className="flex justify-between items-center p-4 border-b border-[#30363d] bg-[#161b22] rounded-t-lg">
-              <span className="text-slate-200 font-code-md text-sm flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-[80%] h-[80%] rounded-lg flex flex-col shadow-2xl">
+            <div className="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-t-lg">
+              <span className="text-slate-800 dark:text-slate-200 font-code-md text-sm flex items-center gap-2">
                 <span className="material-symbols-outlined text-purple-400" data-icon="code">code</span>
                 {selectedNode.data?.name || 'Code View'}
               </span>
-              <button onClick={() => setCodeModalOpen(false)} className="text-slate-500 hover:text-slate-200 transition-colors">
+              <button onClick={() => setCodeModalOpen(false)} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
                 <span className="material-symbols-outlined" data-icon="close">close</span>
               </button>
             </div>
-            <div className="flex-1 p-6 overflow-auto text-sm text-[#e6edf3] font-code-md whitespace-pre-wrap custom-scrollbar" style={{ background: '#0d1117' }}>
+            <div className="flex-1 p-6 overflow-auto text-sm text-slate-800 dark:text-[#e6edf3] font-code-md whitespace-pre-wrap custom-scrollbar bg-slate-50 dark:bg-slate-950">
               {selectedNode.data?.source || "No source code available for this node in the graph metadata."}
             </div>
           </div>
