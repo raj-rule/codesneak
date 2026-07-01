@@ -22,67 +22,58 @@ const NODE_CONFIG = {
   FILE: {
     icon: FileCode,
     label: 'File',
-    accent: '#94a3b8',   // slate-400
-    bg: '#1a1f2e',
-    border: '#334155',   // slate-700
+    accent: '#64748b',
+    borderClass: 'border-l-4 border-l-slate-500',
   },
   CLASS: {
     icon: Box,
     label: 'Class',
-    accent: '#a78bfa',   // violet-400
-    bg: '#1e1a2e',
-    border: '#6d28d9',   // violet-700
+    accent: '#8b5cf6',
+    borderClass: 'border-l-4 border-l-violet-500',
   },
   FUNCTION: {
     icon: Braces,
     label: 'Function',
-    accent: '#67e8f9',   // cyan-300
-    bg: '#0f1f2e',
-    border: '#0e7490',   // cyan-700
+    accent: '#06b6d4',
+    borderClass: 'border-l-4 border-l-cyan-500',
   },
 
   // ── Universal schema types ────────────────────────────────────────────────
   COMPONENT: {
     icon: Layout,
     label: 'Component',
-    accent: '#60a5fa',   // blue-400
-    bg: '#0f172a',
-    border: '#1d4ed8',   // blue-700
+    accent: '#3b82f6',
+    borderClass: 'border-l-4 border-l-blue-500',
   },
   HOOK: {
     icon: Zap,
     label: 'Hook',
-    accent: '#fbbf24',   // amber-400
-    bg: '#1c1400',
-    border: '#b45309',   // amber-700
+    accent: '#f59e0b',
+    borderClass: 'border-l-4 border-l-amber-500',
   },
   API_ROUTE: {
     icon: Server,
     label: 'Route',
-    accent: '#4ade80',   // green-400
-    bg: '#0d1f11',
-    border: '#15803d',   // green-700
+    accent: '#10b981',
+    borderClass: 'border-l-4 border-l-emerald-500',
   },
   API_ENDPOINT: {
     icon: Server,
     label: 'Endpoint',
-    accent: '#4ade80',   // green-400
-    bg: '#0d1f11',
-    border: '#15803d',   // green-700
+    accent: '#10b981',
+    borderClass: 'border-l-4 border-l-emerald-500',
   },
   API_CALL: {
     icon: Wifi,
     label: 'API Call',
-    accent: '#c084fc',   // purple-400
-    bg: '#1a0f2e',
-    border: '#7e22ce',   // purple-700
+    accent: '#a855f7',
+    borderClass: 'border-l-4 border-l-purple-500',
   },
   DATABASE_TABLE: {
     icon: Database,
     label: 'Table',
-    accent: '#f43f5e',   // rose-500
-    bg: '#2e1216',
-    border: '#be123c',   // rose-700
+    accent: '#f43f5e',
+    borderClass: 'border-l-4 border-l-rose-500',
   },
 };
 
@@ -101,53 +92,28 @@ export default function CustomNode({ data }) {
 
   return (
     <div
-      style={{
-        background: cfg.bg,
-        border: `1px solid ${cfg.border}`,
-        borderLeft: `3px solid ${cfg.accent}`,
-        borderRadius: '8px',
-        minWidth: '190px',
-        maxWidth: '240px',
-        fontFamily: 'Inter, sans-serif',
-        boxShadow: `0 0 0 1px ${cfg.border}22, 0 4px 16px rgba(0,0,0,0.4)`,
-        transition: 'box-shadow 0.2s ease',
-        cursor: 'pointer',
-      }}
-      className="group"
+      className={`w-[220px] rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 ${cfg.borderClass} shadow-sm overflow-hidden flex flex-col cursor-pointer group`}
     >
       {/* Target handle */}
       <Handle
         type="target"
         position={Position.Top}
-        style={{ background: cfg.accent, width: 8, height: 8, borderRadius: 4 }}
+        className="w-2 h-2 !bg-slate-400 dark:!bg-slate-600 border border-white dark:border-slate-900"
       />
 
       {/* Header row */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '6px 10px 5px',
-          borderBottom: `1px solid ${cfg.border}66`,
-        }}
-      >
+      <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
         {/* Icon + type badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             <Icon size={13} color={cfg.accent} strokeWidth={2.2} />
             {data.is_unified && (
-              <FileCode size={11} color={cfg.accent} strokeWidth={2.2} style={{ opacity: 0.7 }} title="Merged File & Component" />
+              <FileCode size={11} color={cfg.accent} strokeWidth={2.2} className="opacity-70" title="Merged File & Component" />
             )}
           </div>
           <span
-            style={{
-              fontSize: '10px',
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              color: cfg.accent,
-            }}
+            className="text-[10px] font-bold tracking-wider uppercase"
+            style={{ color: cfg.accent }}
           >
             {cfg.label}
           </span>
@@ -158,17 +124,7 @@ export default function CustomNode({ data }) {
           <button
             onClick={(e) => { e.stopPropagation(); data.onExpand?.(); }}
             title={data.isExpanded ? 'Collapse' : 'Expand'}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#64748b',
-              padding: 2,
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: 4,
-            }}
-            className="hover:!text-white transition-colors"
+            className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors p-0.5 flex items-center bg-transparent border-none cursor-pointer"
           >
             {data.isExpanded ? <Minimize2 size={11} /> : <Maximize2 size={11} />}
           </button>
@@ -176,23 +132,9 @@ export default function CustomNode({ data }) {
       </div>
 
       {/* Body — symbol name & method badges */}
-      <div
-        style={{
-          padding: '7px 10px 8px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '4px',
-        }}
-      >
+      <div className="p-3 flex flex-col gap-1">
         <div
-          style={{
-            fontSize: '12.5px',
-            fontWeight: 500,
-            color: '#e2e8f0',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
+          className="text-xs font-mono font-medium text-slate-800 dark:text-slate-200 truncate"
           title={data.name}
         >
           {data.name || (data.path
@@ -203,7 +145,7 @@ export default function CustomNode({ data }) {
         
         {/* Method Badges for API_ENDPOINT */}
         {data.methods && data.methods.length > 0 && (
-          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          <div className="flex gap-1 flex-wrap mt-1">
             {data.methods.map(method => {
               // Basic color mapping for common HTTP methods
               let bg = '#1e293b'; let color = '#94a3b8'; let border = '#334155';
@@ -239,7 +181,7 @@ export default function CustomNode({ data }) {
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{ background: cfg.accent, width: 8, height: 8, borderRadius: 4 }}
+        className="w-2 h-2 !bg-slate-400 dark:!bg-slate-600 border border-white dark:border-slate-900"
       />
     </div>
   );
