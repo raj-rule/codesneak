@@ -1,15 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  --bg-dark: #0f111a;
-  --bg-panel: #1e1e2e;
-  --bg-panel-hover: #2a2a3c;
-  --text-main: #f8f8f2;
-  --text-muted: #a1a1aa;
-  --accent: #82aaff;
-  --accent-glow: rgba(130, 170, 255, 0.2);
-  --border-color: #3b3b4f;
+  --bg-dark: #ffffff;
+  --bg-panel: #f8fafc;
+  --bg-panel-hover: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --accent: #2563eb;
+  --accent-glow: rgba(37, 99, 235, 0.15);
+  --border-color: #cbd5e1;
   --font-family: 'Inter', system-ui, sans-serif;
+}
+
+.dark {
+  --bg-dark: #0a0f1d;
+  --bg-panel: #111827;
+  --bg-panel-hover: #1f2937;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-glow: rgba(59, 130, 246, 0.15);
+  --border-color: #334155;
 }
 
 body {
